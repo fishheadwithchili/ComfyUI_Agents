@@ -1,0 +1,4 @@
+gremlinpython==3.6.1
+aiohttp==3.9.5  # 已更新到当前安装的版本
+pyyaml==6.0.1
+python-dotenv==1.0.0 

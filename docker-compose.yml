@@ -1,0 +1,61 @@
+version: '3'
+services:
+  cassandra:
+    image: cassandra:4.1.3
+    container_name: cassandra
+    ports:
+      - "9042:9042"       # CQL
+    environment:
+      - CASSANDRA_START_RPC=true
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=100M
+    volumes:
+      - type: bind
+        source: ./data/cassandra
+        target: /var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - janusgraph-network
+
+  janusgraph:
+    image: janusgraph/janusgraph:1.1.0
+    container_name: janusgraph
+    ports:
+      - "8182:8182"       # Gremlin Server
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    environment:
+      - janusgraph.storage.backend=cql
+      - janusgraph.storage.hostname=cassandra
+      - janusgraph.storage.cql.keyspace=janusgraph
+      - janusgraph.storage.connection-timeout=60000
+      - janusgraph.storage.read-time=60000
+      - janusgraph.storage.write-time=60000
+      - janusgraph.ids.block-size=100000
+      - janusgraph.ids.renew-timeout=3600000
+    volumes:
+      - type: bind
+        source: ./data/janusgraph
+        target: /var/lib/janusgraph
+    healthcheck:
+      test: ["CMD", "bin/gremlin.sh", "-e", "scripts/remote-connect.groovy"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+    networks:
+      - janusgraph-network
+
+networks:
+  janusgraph-network:
+    driver: bridge
+
+volumes:
+  cassandra_data:
+    driver: local
+  janusgraph_data:
+    driver: local 
