@@ -1,4 +1,28 @@
-gremlinpython==3.6.1
-aiohttp==3.9.5  # 已更新到当前安装的版本
+# Graph Database
+gremlinpython==3.7.3
+python-dotenv==1.0.0
+aiohttp>=3.9.0
+
+# Data Processing
 pyyaml==6.0.1
-python-dotenv==1.0.0 
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Web Crawling
+requests>=2.31.0
+beautifulsoup4>=4.12.2
+selenium>=4.18.0
+
+# AI & ML
+torch>=2.2.0
+transformers>=4.37.0
+sentence-transformers>=2.3.1
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Development Tools
+black>=24.1.0
+isort>=5.13.0
+flake8>=7.0.0 
